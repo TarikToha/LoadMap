@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,22 +33,22 @@ public class LoadMap {
 
         try {
 
-//                if (!Constants.WHOLEMAP) {
-//                    System.out.println("working road id = " + Constants.WORKINGROAD);
-//                } else {
-//                    System.out.println("working road id = ALL");
-//                }
-//
-//                System.out.println("program has started at " + new Date(startTime));
-//                System.out.println("-----------------------++++------------------------");
+            if (!Constants.WHOLEMAP) {
+                System.out.println("working road id = " + Constants.WORKINGROAD);
+            } else {
+                System.out.println("working road id = ALL");
+            }
+
+            System.out.println("program has started at " + new Date(startTime));
+            System.out.println("-----------------------++++------------------------");
             new LoadMap(startTime, road);
 
-//                System.out.println("-----------------------++++------------------------");
-//                long endTime = System.currentTimeMillis();
-//                System.out.println("program has ended at " + new Date(endTime));
-//
-//                long totalTime = endTime - startTime;
-//                System.out.println("totalTime = " + totalTime / 1000 + " seconds");
+            System.out.println("-----------------------++++------------------------");
+            long endTime = System.currentTimeMillis();
+            System.out.println("program has ended at " + new Date(endTime));
+
+            long totalTime = endTime - startTime;
+            System.out.println("totalTime = " + totalTime / 1000 + " seconds");
         } catch (Exception ex) {
             if (!"continue".equals(ex.getMessage())) {
                 handleException(ex);
@@ -81,24 +82,24 @@ public class LoadMap {
          */
         ArrayList<Polygon> polygons = getPolygons(road);
 
-//        long endTime = System.currentTimeMillis();
-//
-//        System.out.println("Checkpoint 1 " + (maxiX - miniX) + " " + (maxiY - miniY) + " " + polySizeSum + " " + polygons.size());
-//        System.out.println("Time passed: " + (endTime - startTime));
-//        System.out.println("polygons have been extracted at " + new Date(endTime));
-//        System.out.println("------------------------------------------");
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("Checkpoint 1 " + (maxiX - miniX) + " " + (maxiY - miniY) + " " + polySizeSum + " " + polygons.size());
+        System.out.println("Time passed: " + (endTime - startTime));
+        System.out.println("polygons have been extracted at " + new Date(endTime));
+        System.out.println("------------------------------------------");
         long timeTracker = System.currentTimeMillis();
         /**
          * *Get pixel points. The Logic is: if any point around the current
          * point is inside a polygon then it's inside that polygon**
          */
         HashSet<Point> pixelPoints = getPixelPoints(polygons);
-//        endTime = System.currentTimeMillis();
+        endTime = System.currentTimeMillis();
 
-//        System.out.println("Checkpoint 2 " + pixelPoints.size());
-//        System.out.println("Time passed: " + (endTime - startTime));
-//        System.out.println("pixelPoints have been extracted at " + new Date(endTime));
-//        System.out.println("------------------------------------------");
+        System.out.println("Checkpoint 2 " + pixelPoints.size());
+        System.out.println("Time passed: " + (endTime - startTime));
+        System.out.println("pixelPoints have been extracted at " + new Date(endTime));
+        System.out.println("------------------------------------------");
         System.out.print(road + "\t" + (maxiX - miniX) + "\t" + (maxiY - miniY) + "\t" + polySizeSum + "\t" + prevPolygons.size()
                 + "\t" + (System.currentTimeMillis() - timeTracker) + "\t");
         timeTracker = System.currentTimeMillis();
@@ -106,48 +107,48 @@ public class LoadMap {
          * *Detect raw corner points**
          */
         HashSet<Point> rawCornerPoints = detectRawCornerPoints(pixelPoints);
-//        endTime = System.currentTimeMillis();
+        endTime = System.currentTimeMillis();
 
-//        System.out.println("Checkpoint 3 " + rawCornerPoints.size());
-//        System.out.println("Time passed: " + (endTime - startTime));
-//        System.out.println("rawCornerPoints have been extracted at " + new Date(endTime));
-//        System.out.println("------------------------------------------");
+        System.out.println("Checkpoint 3 " + rawCornerPoints.size());
+        System.out.println("Time passed: " + (endTime - startTime));
+        System.out.println("rawCornerPoints have been extracted at " + new Date(endTime));
+        System.out.println("------------------------------------------");
         System.out.print(pixelPoints.size() + "\t" + (System.currentTimeMillis() - timeTracker) + "\t");
 
-//        startTime = System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
         /**
          * *Detect final corner points using BFS. The average ones**
          */
         ArrayList<Corner> nodes = detectCornerPoints(rawCornerPoints, pixelPoints);
-//        endTime = System.currentTimeMillis();
-//
-//        System.out.println("Checkpoint 4 " + rawCornerPoints.size() + " " + nodes.size());
-//        System.out.println("Time passed: " + (endTime - startTime));
-//        System.out.println("nodes have been extracted at " + new Date(endTime));
-//        System.out.println("------------------------------------------");
-//
-//        startTime = System.currentTimeMillis();
+        endTime = System.currentTimeMillis();
+
+        System.out.println("Checkpoint 4 " + rawCornerPoints.size() + " " + nodes.size());
+        System.out.println("Time passed: " + (endTime - startTime));
+        System.out.println("nodes have been extracted at " + new Date(endTime));
+        System.out.println("------------------------------------------");
+
+        startTime = System.currentTimeMillis();
         /**
          * *Detect Connections. Corner id calculated in previous stage. Run
          * BFS**
          */
         ArrayList<Road> links = detectConnections(rawCornerPoints, pixelPoints, nodes);
-//        endTime = System.currentTimeMillis();
-//
-//        System.out.println("Checkpoint 5 " + nodes.size() + " " + links.size());
-//        System.out.println("Time passed: " + (endTime - startTime));
-//        System.out.println("links have been extracted at " + new Date(endTime));
-//        System.out.println("------------------------------------------");
-//        startTime = System.currentTimeMillis();
+        endTime = System.currentTimeMillis();
+
+        System.out.println("Checkpoint 5 " + nodes.size() + " " + links.size());
+        System.out.println("Time passed: " + (endTime - startTime));
+        System.out.println("links have been extracted at " + new Date(endTime));
+        System.out.println("------------------------------------------");
+        startTime = System.currentTimeMillis();
         /**
          * *Formatted Output For Simulator**
          */
         writeData(nodes, links);
-//        endTime = System.currentTimeMillis();
+        endTime = System.currentTimeMillis();
 
-//        System.out.println("done simulator input generation");
-//        System.out.println("Time passed: " + (endTime - startTime));
-//        System.out.println("nodes, links, paths, and demands have been written at " + new Date(endTime));
+        System.out.println("done simulator input generation");
+        System.out.println("Time passed: " + (endTime - startTime));
+        System.out.println("nodes, links, paths, and demands have been written at " + new Date(endTime));
         System.out.println(System.currentTimeMillis() - startTime);
     }
 
@@ -157,16 +158,18 @@ public class LoadMap {
 
         try (CSVReader cr = new CSVReader(new BufferedReader(new FileReader(Constants.FILENAMEIN)))) {
             List<String[]> readAll = cr.readAll();
+            List<String> headers = Arrays.asList(readAll.get(0));
+            int x = headers.indexOf("xcoord");
+            int y = headers.indexOf("ycoord");
             if (!Constants.WHOLEMAP) {
                 for (int i = 1; i < readAll.size(); i++) {
-                    //if (Double.parseDouble(readAll.get(i)[0]) == Constants.WORKINGROAD) {
                     if (Double.parseDouble(readAll.get(i)[0]) == road) {
-                        borderPoints.add(new Point(Double.parseDouble(readAll.get(i)[6]), Double.parseDouble(readAll.get(i)[7])));
+                        borderPoints.add(new Point(Double.parseDouble(readAll.get(i)[x]), Double.parseDouble(readAll.get(i)[y])));
                     }
                 }
             } else {
                 for (int i = 1; i < readAll.size(); i++) {
-                    borderPoints.add(new Point(Double.parseDouble(readAll.get(i)[6]), Double.parseDouble(readAll.get(i)[7])));
+                    borderPoints.add(new Point(Double.parseDouble(readAll.get(i)[x]), Double.parseDouble(readAll.get(i)[y])));
                 }
             }
         }
@@ -950,11 +953,5 @@ public class LoadMap {
         nodeThread.join();
         linkThread.join();
         pathThread.join();
-
-        Files.copy(new File(Constants.NODE).toPath(), new File(Constants.SIMULATORPATH + Constants.NODE).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(new File(Constants.LINK).toPath(), new File(Constants.SIMULATORPATH + Constants.LINK).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(new File(Constants.PATH).toPath(), new File(Constants.SIMULATORPATH + Constants.PATH).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(new File(Constants.DEMAND).toPath(), new File(Constants.SIMULATORPATH + Constants.DEMAND).toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
-
 }

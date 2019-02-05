@@ -2,9 +2,9 @@
 final class Constants {
 
     static final boolean WHOLEMAP = false;
-    static final boolean PRINT = false;
+    static final boolean PRINT = true;
 
-    static final String FILENAMEIN = "Nodes.csv";
+    static final String FILENAMEIN = "input\\Nodes.csv";
     static final int WORKINGROAD = 1314;
 
     static final int RESOLUTION = 1;
@@ -20,14 +20,12 @@ final class Constants {
     static final double TOLERANCE = 1.1;
     static final int TRAFFIC = 200;
 
-    static final String ALLPOINTS = "AllPoints.csv";
-    static final String CORNERPOINTSRAW = "CornerPointsRaw.csv";
-    static final String CORNERPOINTS = "CornerPoints.csv";
-    static final String ROADS = "Roads.csv";
-    static final String NODE = "node.txt";
-    static final String LINK = "link.txt";
-    static final String PATH = "path.txt";
-    static final String DEMAND = "demand.txt";
-    static final String SIMULATORPATH = "D:\\Dropbox\\thesis\\dhakasim\\mishkatThesis\\DhakaSim\\";
-
+    static final String ALLPOINTS = "output\\AllPoints.csv";
+    static final String CORNERPOINTSRAW = "output\\CornerPointsRaw.csv";
+    static final String CORNERPOINTS = "output\\CornerPoints.csv";
+    static final String ROADS = "output\\Roads.csv";
+    static final String NODE = "output\\node.txt";
+    static final String LINK = "output\\link.txt";
+    static final String PATH = "output\\path.txt";
+    static final String DEMAND = "output\\demand.txt";
 }
