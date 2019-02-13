@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 
 public class GeneratePixels implements Runnable {
@@ -75,9 +76,9 @@ public class GeneratePixels implements Runnable {
             }
         }
 
-//        if (Constants.PRINT || Constants.WHOLEMAP) {
-//            System.out.println("Thread " + id + " has finished pixel generation at " + new Date(System.currentTimeMillis()));
-//        }
+        if (Constants.PRINT || Constants.WHOLEMAP) {
+            System.out.println("Thread " + id + " has finished pixel generation at " + new Date(System.currentTimeMillis()));
+        }
     }
 
 }

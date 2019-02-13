@@ -3,11 +3,8 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -27,8 +24,6 @@ public class LoadMap {
     }
 
     public static void main(String[] args) {
-        //for (int road = 0; road <= 3746; road++) {
-        int road = 1314;
         long startTime = System.currentTimeMillis();
 
         try {
@@ -41,7 +36,7 @@ public class LoadMap {
 
             System.out.println("program has started at " + new Date(startTime));
             System.out.println("-----------------------++++------------------------");
-            new LoadMap(startTime, road);
+            new LoadMap(startTime, Constants.WORKINGROAD);
 
             System.out.println("-----------------------++++------------------------");
             long endTime = System.currentTimeMillis();
@@ -54,7 +49,6 @@ public class LoadMap {
                 handleException(ex);
             }
         }
-        //}
     }
     private double miniX = Float.MAX_VALUE;
     private double maxiX = 0;

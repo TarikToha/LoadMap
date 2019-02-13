@@ -4,12 +4,12 @@ final class Constants {
     static final boolean WHOLEMAP = false;
     static final boolean PRINT = true;
 
-    static final String FILENAMEIN = "input\\Nodes.csv";
-    static final int WORKINGROAD = 1314;
+    static final String FILENAMEIN = "input\\Nodes - Miamii.csv";
+    static final int WORKINGROAD = 7;
 
     static final int RESOLUTION = 1;
     static final int ANGRESOLUTION = 1;
-    static final double DIVIDERWIDTH = 10;
+    static final double DIVIDERWIDTH = 2;
     static final double LEASTDIST = 4;
     static final double MOSTDIST = 100;
     static final double MULTI = 1.4;

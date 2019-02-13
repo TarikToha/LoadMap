@@ -1,6 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -135,9 +136,9 @@ public class DetectRawCornerPoints implements Runnable {
             }
         }
 
-//        if (Constants.PRINT || Constants.WHOLEMAP) {
-//            System.out.println("Thread " + id + " has finished raw corner points detection at " + new Date(System.currentTimeMillis()));
-//        }
+        if (Constants.PRINT || Constants.WHOLEMAP) {
+            System.out.println("Thread " + id + " has finished raw corner points detection at " + new Date(System.currentTimeMillis()));
+        }
     }
 
 }
