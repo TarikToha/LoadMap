@@ -281,7 +281,7 @@ public class LoadMap {
         ArrayList<GeneratePixels> generatePixels = new ArrayList<>();
         int id = 0;
 
-//        System.out.println((maxiX - miniX) / Constants.RESOLUTION);
+        System.out.println((maxiX - miniX) / Constants.RESOLUTION);
         for (double x = miniX; x <= maxiX; x += Constants.RESOLUTION) {
             generatePixels.add(new GeneratePixels(miniY, maxiY, x, id++, polygons));
         }
