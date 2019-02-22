@@ -87,7 +87,8 @@ public class LoadMap {
          * *Get pixel points. The Logic is: if any point around the current
          * point is inside a polygon then it's inside that polygon**
          */
-        HashSet<Point> pixelPoints = getPixelPoints(polygons);
+//        HashSet<Point> pixelPoints = getPixelPoints(polygons);
+        HashSet<Point> pixelPoints = readPixels();
         endTime = System.currentTimeMillis();
 
         System.out.println("Checkpoint 2 " + pixelPoints.size());
@@ -322,6 +323,21 @@ public class LoadMap {
         pixelThread.start();
     }
 
+    private HashSet<Point> readPixels() {
+        HashSet<Point> pixelPoints = new HashSet<>();
+        try (CSVReader cr = new CSVReader(new BufferedReader(new FileReader(Constants.ALLPOINTS)))) {
+            List<String[]> readAll = cr.readAll();
+            for (int i = 1; i < readAll.size(); i++) {
+                String[] line = readAll.get(i);
+                pixelPoints.add(new Point(Double.parseDouble(line[1]), Double.parseDouble(line[2])));
+                System.out.println(i + "th line has been read at " + new Date(System.currentTimeMillis()));
+            }
+        } catch (Exception ex) {
+            handleException(ex);
+        }
+        return pixelPoints;
+    }
+
     //computaionally expensive
     private HashSet<Point> detectRawCornerPoints(HashSet<Point> pixelPoints) throws Exception {
 
@@ -329,7 +345,7 @@ public class LoadMap {
 
         int i = 0;
 
-//        System.out.println(pixelPoints.size());
+        System.out.println(pixelPoints.size());
         for (Point ip : pixelPoints) {
             cornerRawDetection.add(new DetectRawCornerPoints(ip, pixelPoints, i++));
         }
