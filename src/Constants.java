@@ -2,6 +2,7 @@
 final class Constants {
 
     static final boolean WHOLEMAP = false;
+    static final boolean ALLPOINTSFILE = true;
     static final boolean PRINT = true;
 
     static final String FILENAMEIN = "Nodes_pine.csv";
