@@ -3,8 +3,11 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -27,16 +30,9 @@ public class LoadMap {
         long startTime = System.currentTimeMillis();
 
         try {
-
-            if (!Constants.WHOLEMAP) {
-                System.out.println("working road id = " + Constants.WORKINGROAD);
-            } else {
-                System.out.println("working road id = ALL");
-            }
-
             System.out.println("program has started at " + new Date(startTime));
             System.out.println("-----------------------++++------------------------");
-            new LoadMap(startTime, Constants.WORKINGROAD);
+            new LoadMap(startTime);
 
             System.out.println("-----------------------++++------------------------");
             long endTime = System.currentTimeMillis();
@@ -70,11 +66,11 @@ public class LoadMap {
     private double biasY = Float.MAX_VALUE;
     private final HashSet<Point> rawTerminalPoints = new HashSet<>();
 
-    public LoadMap(long startTime, int road) throws Exception {
+    public LoadMap(long startTime) throws Exception {
         /**
          * *Get the polygons**
          */
-        ArrayList<Polygon> polygons = getPolygons(road);
+        ArrayList<Polygon> polygons = getPolygons();
 
         long endTime = System.currentTimeMillis();
 
@@ -95,7 +91,7 @@ public class LoadMap {
         System.out.println("Time passed: " + (endTime - startTime));
         System.out.println("pixelPoints have been extracted at " + new Date(endTime));
         System.out.println("------------------------------------------");
-        System.out.print(road + "\t" + (maxiX - miniX) + "\t" + (maxiY - miniY) + "\t" + polySizeSum + "\t" + prevPolygons.size()
+        System.out.print((maxiX - miniX) + "\t" + (maxiY - miniY) + "\t" + polySizeSum + "\t" + prevPolygons.size()
                 + "\t" + (System.currentTimeMillis() - timeTracker) + "\t");
         timeTracker = System.currentTimeMillis();
         /**
@@ -147,7 +143,7 @@ public class LoadMap {
         System.out.println(System.currentTimeMillis() - startTime);
     }
 
-    private ArrayList<Point> getBorderPoints(int road) throws Exception {
+    private ArrayList<Point> getBorderPoints() throws Exception {
 
         ArrayList<Point> borderPoints = new ArrayList<>();
 
@@ -156,16 +152,8 @@ public class LoadMap {
             List<String> headers = Arrays.asList(readAll.get(0));
             int x = headers.indexOf("xcoord");
             int y = headers.indexOf("ycoord");
-            if (!Constants.WHOLEMAP) {
-                for (int i = 1; i < readAll.size(); i++) {
-                    if (Double.parseDouble(readAll.get(i)[0]) == road) {
-                        borderPoints.add(new Point(Double.parseDouble(readAll.get(i)[x]), Double.parseDouble(readAll.get(i)[y])));
-                    }
-                }
-            } else {
-                for (int i = 1; i < readAll.size(); i++) {
-                    borderPoints.add(new Point(Double.parseDouble(readAll.get(i)[x]), Double.parseDouble(readAll.get(i)[y])));
-                }
+            for (int i = 1; i < readAll.size(); i++) {
+                borderPoints.add(new Point(Double.parseDouble(readAll.get(i)[x]), Double.parseDouble(readAll.get(i)[y])));
             }
         }
 
@@ -190,11 +178,11 @@ public class LoadMap {
         return 0.5 * Math.abs(area) / mostDist <= Constants.DIVIDERWIDTH;
     }
 
-    private ArrayList<Polygon> getPolygons(int road) throws Exception {
+    private ArrayList<Polygon> getPolygons() throws Exception {
         /**
          * *Get border points from the file**
          */
-        ArrayList<Point> borderPoints = getBorderPoints(road);
+        ArrayList<Point> borderPoints = getBorderPoints();
         if (borderPoints.isEmpty()) {
             throw new Exception("continue");
         }
@@ -341,29 +329,63 @@ public class LoadMap {
     //computaionally expensive
     private HashSet<Point> detectRawCornerPoints(HashSet<Point> pixelPoints) throws Exception {
 
+        File dir = new File("tmp");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+
         ArrayList<DetectRawCornerPoints> cornerRawDetection = new ArrayList<>();
-
-        int i = 0;
-
-        System.out.println(pixelPoints.size());
-        for (Point ip : pixelPoints) {
-            cornerRawDetection.add(new DetectRawCornerPoints(ip, pixelPoints, i++));
-        }
-
-        for (i = 0; i < cornerRawDetection.size(); i++) {
-            cornerRawDetection.get(i).thread.join();
-        }
-
         HashSet<Point> rawNonTerminalPoints = new HashSet<>();
 
         List<String[]> writeAll = new ArrayList<>();
         writeAll.add(new String[]{"ID", "xcoord", "ycoord"});
 
-        for (i = 0; i < cornerRawDetection.size(); i++) {
-            rawTerminalPoints.addAll(cornerRawDetection.get(i).rawTerminalPoints);
-            rawNonTerminalPoints.addAll(cornerRawDetection.get(i).rawNonTerminalPoints);
-            writeAll.addAll(cornerRawDetection.get(i).writeAll);
-            pointWidth.putAll(cornerRawDetection.get(i).pointWidth);
+        System.out.println(pixelPoints.size());
+
+        int i = 0;
+        if (!Constants.RAWCORNERPOINTSFILE) {
+            for (Point ip : pixelPoints) {
+                cornerRawDetection.add(new DetectRawCornerPoints(ip, pixelPoints, i++));
+            }
+
+            for (i = 0; i < cornerRawDetection.size(); i++) {
+                cornerRawDetection.get(i).thread.join();
+            }
+
+            for (i = 0; i < cornerRawDetection.size(); i++) {
+                rawTerminalPoints.addAll(cornerRawDetection.get(i).rawTerminalPoints);
+                rawNonTerminalPoints.addAll(cornerRawDetection.get(i).rawNonTerminalPoints);
+                writeAll.addAll(cornerRawDetection.get(i).writeAll);
+                pointWidth.putAll(cornerRawDetection.get(i).pointWidth);
+            }
+        } else {
+            for (Point ip : pixelPoints) {
+                File file = new File("tmp//rawCornerPoints_data_" + i);
+                if (file.exists()) {
+                    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+                        ArrayList<Object> data = (ArrayList<Object>) ois.readObject();
+                        rawTerminalPoints.addAll((HashSet<Point>) data.get(0));
+                        rawNonTerminalPoints.addAll((HashSet<Point>) data.get(1));
+                        writeAll.addAll((List<String[]>) data.get(2));
+                        pointWidth.putAll((Map) data.get(3));
+                        System.out.println(i + "th raw corner point has been read at " + new Date(System.currentTimeMillis()));
+                    }
+                } else {
+                    cornerRawDetection.add(new DetectRawCornerPoints(ip, pixelPoints, i));
+                }
+                i++;
+            }
+
+            for (i = 0; i < cornerRawDetection.size(); i++) {
+                cornerRawDetection.get(i).thread.join();
+            }
+
+            for (i = 0; i < cornerRawDetection.size(); i++) {
+                rawTerminalPoints.addAll(cornerRawDetection.get(i).rawTerminalPoints);
+                rawNonTerminalPoints.addAll(cornerRawDetection.get(i).rawNonTerminalPoints);
+                writeAll.addAll(cornerRawDetection.get(i).writeAll);
+                pointWidth.putAll(cornerRawDetection.get(i).pointWidth);
+            }
         }
 
         /**
@@ -956,9 +978,9 @@ public class LoadMap {
             }
         };
         pathThread.start();
-        pixelThread.join();
-        rawCornerPointsThread.join();
-        cornerPointsThread.join();
+//        pixelThread.join();
+//        rawCornerPointsThread.join();
+//        cornerPointsThread.join();
         roadThread.join();
         nodeThread.join();
         linkThread.join();

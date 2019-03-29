@@ -1,4 +1,6 @@
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -6,6 +8,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DetectRawCornerPoints implements Runnable {
 
@@ -136,8 +140,24 @@ public class DetectRawCornerPoints implements Runnable {
             }
         }
 
+        writeData();
+
         if (Constants.PRINT || Constants.WHOLEMAP) {
             System.out.println("Thread " + id + " has finished raw corner points detection at " + new Date(System.currentTimeMillis()));
+        }
+    }
+
+    private void writeData() {
+        ArrayList<Object> data = new ArrayList<>();
+        data.add(rawTerminalPoints);
+        data.add(rawNonTerminalPoints);
+        data.add(writeAll);
+        data.add(pointWidth);
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("tmp//rawCornerPoints_data_" + id))) {
+            oos.writeObject(data);
+        } catch (Exception ex) {
+            Logger.getLogger(DetectRawCornerPoints.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -1,12 +1,13 @@
 
 final class Constants {
 
-    static final boolean WHOLEMAP = false;
-    static final boolean ALLPOINTSFILE = true;
+    static final boolean WHOLEMAP = true;
+    static final boolean ALLPOINTSFILE = false;
+    static final boolean RAWCORNERPOINTSFILE = true;
     static final boolean PRINT = true;
 
-    static final String FILENAMEIN = "Nodes_pine.csv";
-    static final int WORKINGROAD = 11;
+    //input file
+    static final String FILENAMEIN = "Miami_beach.csv";
 
     static final int RESOLUTION = 1;
     static final int ANGRESOLUTION = 3;
@@ -21,10 +22,13 @@ final class Constants {
     static final double TOLERANCE = 1.1;
     static final int TRAFFIC = 200;
 
+    //internal output files
     static final String ALLPOINTS = "AllPoints.csv";
     static final String CORNERPOINTSRAW = "CornerPointsRaw.csv";
     static final String CORNERPOINTS = "CornerPoints.csv";
     static final String ROADS = "Roads.csv";
+
+    //final output files
     static final String NODE = "node.txt";
     static final String LINK = "link.txt";
     static final String PATH = "path.txt";
