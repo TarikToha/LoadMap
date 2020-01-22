@@ -3,11 +3,11 @@ final class Constants {
 
     static final boolean WHOLEMAP = true;
     static final boolean ALLPOINTSFILE = false;
-    static final boolean RAWCORNERPOINTSFILE = true;
+    static final boolean RAWCORNERPOINTSFILE = false;
     static final boolean PRINT = true;
 
     //input file
-    static final String FILENAMEIN = "Miami_beach.csv";
+    static final String FILENAMEIN = "Nodes_shankar_palashi.csv";
 
     static final int RESOLUTION = 1;
     static final int ANGRESOLUTION = 3;
